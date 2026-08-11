@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MalditoTucu</title>
+<style>
+  :root {
+    --glass-bg: rgba(255, 255, 255, 0.08);
+    --glass-border: rgba(255, 255, 255, 0.18);
+    --text-color: #f5f5f5;
+    --accent: #ffffff;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    cursor: none;
+  }
+
+  html, body {
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: var(--text-color);
+  }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  /* Video de fondo */
+  .bg-video {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    transform: translate(-50%, -50%);
+    z-index: -2;
+    object-fit: cover;
+  }
+
+  .bg-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: -1;
+  }
+
+  /* Card glassmorphism */
+  .card {
+    width: 90%;
+    max-width: 380px;
+    padding: 40px 28px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: fadeIn 0.8s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .avatar {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .name {
+    margin-top: 18px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  .location {
+    margin-top: 6px;
+    font-size: 0.9rem;
+    opacity: 0.75;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .bio {
+    margin-top: 18px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    min-height: 3.2em;
+    opacity: 0.9;
+  }
+
+  .bio .cursor-blink {
+    display: inline-block;
+    width: 2px;
+    background: var(--accent);
+    margin-left: 2px;
+    animation: blink 0.9s steps(1) infinite;
+  }
+
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+
+  .socials {
+    margin-top: 26px;
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .socials a {
+    width: 46px;
+    height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    text-decoration: none;
+    font-size: 1.3rem;
+    transition: transform 0.25s ease, background 0.25s ease;
+  }
+
+  .socials a:hover {
+    transform: translateY(-4px) scale(1.08);
+    background: rgba(255, 255, 255, 0.22);
+  }
+
+  /* Botón de música */
+  .music-toggle {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: var(--text-color);
+    z-index: 10;
+    transition: transform 0.2s ease, background 0.2s ease;
+  }
+
+  .music-toggle:hover {
+    transform: scale(1.1);
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  /* Cursor personalizado */
+  .custom-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    font-size: 22px;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.08s ease-out;
+    user-select: none;
+  }
+
+  @media (hover: none) {
+    * { cursor: auto; }
+    .custom-cursor { display: none; }
+  }
+</style>
+</head>
+<body>
+
+  <video class="bg-video" autoplay muted loop playsinline>
+    <source src="fondo.mp4" type="video/mp4">
+  </video>
+  <div class="bg-overlay"></div>
+
+  <div class="card">
+    <img class="avatar" src="avatar.png" alt="Avatar" onerror="this.style.opacity=0.2;">
+    <div class="name">MalditoTucu</div>
+    <div class="location">📍 Argentina</div>
+    <div class="bio" id="bio"><span id="bio-text"></span><span class="cursor-blink">&nbsp;</span></div>
+
+    <div class="socials">
+      <a href="https://instagram.com/TU_USUARIO" target="_blank" rel="noopener noreferrer" title="Instagram">📷</a>
+      <a href="https://twitter.com/TU_USUARIO" target="_blank" rel="noopener noreferrer" title="Twitter / X">🐦</a>
+      <a href="https://github.com/MalditoTucu" target="_blank" rel="noopener noreferrer" title="GitHub">💻</a>
+      <a href="https://tiktok.com/@TU_USUARIO" target="_blank" rel="noopener noreferrer" title="TikTok">🎵</a>
+      <a href="https://discord.com/users/TU_USUARIO" target="_blank" rel="noopener noreferrer" title="Discord">🎮</a>
+    </div>
+  </div>
+
+  <button class="music-toggle" id="musicToggle" title="Activar/Desactivar música">🔇</button>
+  <audio id="bgMusic" src="musica.mp3" loop></audio>
+
+  <div class="custom-cursor" id="customCursor">🍎</div>
+
+<script>
+  // Efecto de tipeo en la bio
+  const bioLines = [
+    "Bienvenido a mi perfil ✨",
+    "Desarrollador & creador de cosas raras 🚀",
+    "Gracias por pasar por acá 🍎"
+  ];
+  const bioText = document.getElementById('bio-text');
+  let lineIndex = 0;
+  let charIndex = 0;
+  let deleting = false;
+
+  function typeLoop() {
+    const currentLine = bioLines[lineIndex];
+
+    if (!deleting) {
+      bioText.textContent = currentLine.slice(0, charIndex + 1);
+      charIndex++;
+      if (charIndex === currentLine.length) {
+        deleting = true;
+        setTimeout(typeLoop, 1800);
+        return;
+      }
+    } else {
+      bioText.textContent = currentLine.slice(0, charIndex - 1);
+      charIndex--;
+      if (charIndex === 0) {
+        deleting = false;
+        lineIndex = (lineIndex + 1) % bioLines.length;
+      }
+    }
+
+    setTimeout(typeLoop, deleting ? 35 : 60);
+  }
+  typeLoop();
+
+  // Música de fondo con botón toggle
+  const musicToggle = document.getElementById('musicToggle');
+  const bgMusic = document.getElementById('bgMusic');
+  let playing = false;
+
+  musicToggle.addEventListener('click', () => {
+    if (playing) {
+      bgMusic.pause();
+      musicToggle.textContent = '🔇';
+    } else {
+      bgMusic.play().catch(() => {});
+      musicToggle.textContent = '🔊';
+    }
+    playing = !playing;
+  });
+
+  // Cursor personalizado (emoji de manzana)
+  const cursor = document.getElementById('customCursor');
+  window.addEventListener('mousemove', (e) => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+  });
+  document.addEventListener('mousedown', () => {
+    cursor.style.transform = 'translate(-50%, -50%) scale(0.8)';
+  });
+  document.addEventListener('mouseup', () => {
+    cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+  });
+</script>
+
+</body>
+</html>
