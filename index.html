@@ -16,7 +16,6 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    cursor: none;
   }
 
   html, body {
@@ -62,8 +61,8 @@
   /* Card glassmorphism */
   .card {
     width: 90%;
-    max-width: 380px;
-    padding: 40px 28px;
+    max-width: 420px;
+    padding: 44px 32px;
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
     border-radius: 24px;
@@ -74,11 +73,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    animation: fadeIn 0.8s ease;
+    animation: fadeIn 2.2s ease;
   }
 
   @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
+    from { opacity: 0; transform: translateY(40px); }
     to { opacity: 1; transform: translateY(0); }
   }
 
@@ -153,51 +152,104 @@
   .socials a:hover {
     transform: translateY(-4px) scale(1.08);
     background: rgba(255, 255, 255, 0.22);
+    box-shadow: 0 6px 18px rgba(255, 255, 255, 0.25);
   }
 
-  /* Botón de música */
-  .music-toggle {
+  .socials a img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+  }
+
+  .socials a:hover img {
+    animation: iconWiggle 0.5s ease;
+  }
+
+  @keyframes iconWiggle {
+    0% { transform: rotate(0deg) scale(1); }
+    25% { transform: rotate(-15deg) scale(1.15); }
+    50% { transform: rotate(12deg) scale(1.15); }
+    75% { transform: rotate(-6deg) scale(1.1); }
+    100% { transform: rotate(0deg) scale(1.1); }
+  }
+
+  /* Control de música (mute + volumen) */
+  .music-control {
     position: fixed;
-    bottom: 24px;
-    right: 24px;
-    width: 52px;
-    height: 52px;
-    border-radius: 50%;
+    top: 24px;
+    left: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px;
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
+    border-radius: 30px;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
+    z-index: 10;
+  }
+
+  .music-toggle {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: transparent;
+    border: none;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.4rem;
+    font-size: 1.3rem;
     color: var(--text-color);
     z-index: 10;
-    transition: transform 0.2s ease, background 0.2s ease;
+    transition: transform 0.2s ease;
   }
 
   .music-toggle:hover {
     transform: scale(1.1);
-    background: rgba(255, 255, 255, 0.2);
   }
 
-  /* Cursor personalizado */
-  .custom-cursor {
+  .volume-slider {
+    width: 90px;
+    accent-color: #ffffff;
+  }
+
+  @media (max-width: 480px) {
+    .volume-slider {
+      width: 60px;
+    }
+  }
+
+  .watermark {
     position: fixed;
-    top: 0;
-    left: 0;
-    font-size: 22px;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 480px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    text-align: center;
+    z-index: 5;
     pointer-events: none;
-    z-index: 9999;
-    transform: translate(-50%, -50%);
-    transition: transform 0.08s ease-out;
-    user-select: none;
   }
 
-  @media (hover: none) {
-    * { cursor: auto; }
-    .custom-cursor { display: none; }
+  .watermark-brand {
+    font-size: 13px;
+    font-weight: 600;
+    color: #3ddc84;
+    opacity: 0.55;
   }
+
+  .watermark-msg {
+    font-size: 11px;
+    font-weight: 400;
+    color: #f5f5f5;
+    opacity: 0.3;
+  }
+
 </style>
 </head>
 <body>
@@ -209,30 +261,36 @@
 
   <div class="card">
     <img class="avatar" src="avatar.png" alt="Avatar" onerror="this.style.opacity=0.2;">
-    <div class="name">MalditoTucu</div>
-    <div class="location">📍 Argentina</div>
+    <div class="name">MalditoTucumano</div>
+    <div class="location">Tucumán, Argentina</div>
     <div class="bio" id="bio"><span id="bio-text"></span><span class="cursor-blink">&nbsp;</span></div>
 
     <div class="socials">
-      <a href="https://instagram.com/TU_USUARIO" target="_blank" rel="noopener noreferrer" title="Instagram">📷</a>
-      <a href="https://twitter.com/TU_USUARIO" target="_blank" rel="noopener noreferrer" title="Twitter / X">🐦</a>
-      <a href="https://github.com/MalditoTucu" target="_blank" rel="noopener noreferrer" title="GitHub">💻</a>
-      <a href="https://tiktok.com/@TU_USUARIO" target="_blank" rel="noopener noreferrer" title="TikTok">🎵</a>
-      <a href="https://discord.com/users/TU_USUARIO" target="_blank" rel="noopener noreferrer" title="Discord">🎮</a>
+      <a href="https://www.instagram.com/brianuvu/" target="_blank" rel="noopener noreferrer" title="@brianuvu"><img src="logos/instagram.png" alt="Instagram"></a>
+      <a href="https://www.tiktok.com/@maldito_tucuman0" target="_blank" rel="noopener noreferrer" title="@maldito_tucuman0"><img src="logos/tik-tok.png" alt="TikTok"></a>
+      <a href="discord://discordapp.com/users/486374139876081665" target="_blank" rel="noopener noreferrer" title="brians_uvu"><img src="logos/discord.png" alt="Discord"></a>
+      <a href="https://kick.com/maldito-tucumano" target="_blank" rel="noopener noreferrer" title="Maldito_Tucumano"><img src="logos/kick.png" alt="Kick"></a>
     </div>
   </div>
 
-  <button class="music-toggle" id="musicToggle" title="Activar/Desactivar música">🔇</button>
+  <div class="music-control">
+    <button class="music-toggle" id="musicToggle" title="Activar/Desactivar música">🔇</button>
+    <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="0.5">
+  </div>
   <audio id="bgMusic" src="musica.mp3" loop></audio>
 
-  <div class="custom-cursor" id="customCursor">🍎</div>
+  <div class="watermark">
+    <div class="watermark-brand">by MalditoTucumano</div>
+    <div class="watermark-msg">si quieres algo como esto escribeme a cualquiera de mis redes y llegamos a un acuerdo</div>
+  </div>
 
 <script>
   // Efecto de tipeo en la bio
   const bioLines = [
-    "Bienvenido a mi perfil ✨",
-    "Desarrollador & creador de cosas raras 🚀",
-    "Gracias por pasar por acá 🍎"
+    "Bienvenido, gracias por pasar",
+    "Intento de streamer",
+    "eh uraaaaa",
+    "sigueme en mis redes"
   ];
   const bioText = document.getElementById('bio-text');
   let lineIndex = 0;
@@ -263,34 +321,50 @@
   }
   typeLoop();
 
-  // Música de fondo con botón toggle
+  // Música de fondo: toggle de mute + slider de volumen en tiempo real
   const musicToggle = document.getElementById('musicToggle');
+  const volumeSlider = document.getElementById('volumeSlider');
   const bgMusic = document.getElementById('bgMusic');
-  let playing = false;
+  bgMusic.volume = parseFloat(volumeSlider.value);
+
+  function updateMusicIcon() {
+    musicToggle.textContent = (bgMusic.paused || bgMusic.muted) ? '🔇' : '🔊';
+  }
 
   musicToggle.addEventListener('click', () => {
-    if (playing) {
-      bgMusic.pause();
-      musicToggle.textContent = '🔇';
-    } else {
+    if (bgMusic.paused) {
+      bgMusic.muted = false;
       bgMusic.play().catch(() => {});
-      musicToggle.textContent = '🔊';
+    } else {
+      bgMusic.muted = !bgMusic.muted;
     }
-    playing = !playing;
+    updateMusicIcon();
   });
 
-  // Cursor personalizado (emoji de manzana)
-  const cursor = document.getElementById('customCursor');
-  window.addEventListener('mousemove', (e) => {
-    cursor.style.left = e.clientX + 'px';
-    cursor.style.top = e.clientY + 'px';
+  volumeSlider.addEventListener('input', () => {
+    const vol = parseFloat(volumeSlider.value);
+    bgMusic.volume = vol;
+    bgMusic.muted = vol === 0;
+    if (bgMusic.paused && vol > 0) {
+      bgMusic.play().catch(() => {});
+    }
+    updateMusicIcon();
   });
-  document.addEventListener('mousedown', () => {
-    cursor.style.transform = 'translate(-50%, -50%) scale(0.8)';
-  });
-  document.addEventListener('mouseup', () => {
-    cursor.style.transform = 'translate(-50%, -50%) scale(1)';
-  });
+
+  // Intento de autoplay al entrar. Si el navegador lo bloquea, arranca
+  // apenas el usuario interactúa por primera vez con la página.
+  function tryAutoplay() {
+    bgMusic.play().then(updateMusicIcon).catch(() => {
+      const startOnInteraction = () => {
+        bgMusic.play().catch(() => {});
+        updateMusicIcon();
+      };
+      ['click', 'touchstart', 'keydown'].forEach(evt =>
+        document.addEventListener(evt, startOnInteraction, { once: true })
+      );
+    });
+  }
+  tryAutoplay();
 </script>
 
 </body>
