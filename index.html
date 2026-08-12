@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MalditoTucu</title>
+<link rel="icon" type="image/png" href="favicon.png">
 <style>
   :root {
     --glass-bg: rgba(255, 255, 255, 0.08);
@@ -74,6 +75,7 @@
     flex-direction: column;
     align-items: center;
     animation: fadeIn 2.2s ease;
+    position: relative;
   }
 
   @keyframes fadeIn {
@@ -89,6 +91,26 @@
     border: 3px solid rgba(255, 255, 255, 0.6);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     background: rgba(255, 255, 255, 0.1);
+    pointer-events: auto;
+    cursor: pointer;
+  }
+
+  /* Protección básica de imágenes contra descarga/copia */
+  img {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    user-drag: none;
+    -webkit-touch-callout: none;
+    pointer-events: none;
+  }
+
+  .socials a {
+    pointer-events: auto;
   }
 
   .name {
@@ -209,15 +231,55 @@
     transform: scale(1.1);
   }
 
+  .volume-wrapper {
+    max-width: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-width 0.35s ease, opacity 0.25s ease;
+  }
+
+  .volume-wrapper.open {
+    max-width: 90px;
+    opacity: 1;
+  }
+
   .volume-slider {
     width: 90px;
     accent-color: #ffffff;
+    display: block;
   }
 
   @media (max-width: 480px) {
+    .volume-wrapper.open {
+      max-width: 60px;
+    }
+
     .volume-slider {
       width: 60px;
     }
+  }
+
+  .views-counter {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 9px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    z-index: 2;
+    font-size: 0.78rem;
+    opacity: 0.55;
+  }
+
+  .views-counter img {
+    width: 15px;
+    height: 15px;
+    object-fit: contain;
+    opacity: 0.85;
   }
 
   .watermark {
@@ -250,32 +312,125 @@
     opacity: 0.3;
   }
 
+  /* Easter egg: glitch al hacer 5 clicks seguidos en el avatar */
+  @keyframes glitchShake {
+    0%   { transform: translate(0, 0); }
+    10%  { transform: translate(-9px, 6px); }
+    20%  { transform: translate(8px, -7px); }
+    30%  { transform: translate(-7px, -8px); }
+    40%  { transform: translate(9px, 8px); }
+    50%  { transform: translate(-8px, 4px); }
+    60%  { transform: translate(8px, -5px); }
+    70%  { transform: translate(-5px, 9px); }
+    80%  { transform: translate(6px, -8px); }
+    90%  { transform: translate(-6px, 5px); }
+    100% { transform: translate(0, 0); }
+  }
+
+  @keyframes glitchHue {
+    0%   { filter: hue-rotate(0deg) saturate(1); }
+    25%  { filter: hue-rotate(110deg) saturate(2.2); }
+    50%  { filter: hue-rotate(200deg) saturate(1.6); }
+    75%  { filter: hue-rotate(300deg) saturate(2.4); }
+    100% { filter: hue-rotate(360deg) saturate(1); }
+  }
+
+  @keyframes glitchRGB {
+    0%, 100% {
+      box-shadow: 0 0 0 rgba(255, 0, 70, 0), 0 0 0 rgba(0, 255, 255, 0), 0 8px 32px rgba(0, 0, 0, 0.37);
+    }
+    20% {
+      box-shadow: -7px 0 0 rgba(255, 0, 70, 0.75), 7px 0 0 rgba(0, 255, 255, 0.75), 0 8px 32px rgba(0, 0, 0, 0.37);
+    }
+    40% {
+      box-shadow: 7px 3px 0 rgba(255, 0, 70, 0.75), -7px -3px 0 rgba(0, 255, 255, 0.75), 0 8px 32px rgba(0, 0, 0, 0.37);
+    }
+    60% {
+      box-shadow: -5px -4px 0 rgba(255, 0, 70, 0.75), 5px 4px 0 rgba(0, 255, 255, 0.75), 0 8px 32px rgba(0, 0, 0, 0.37);
+    }
+    80% {
+      box-shadow: 6px -3px 0 rgba(255, 0, 70, 0.75), -6px 3px 0 rgba(0, 255, 255, 0.75), 0 8px 32px rgba(0, 0, 0, 0.37);
+    }
+  }
+
+  body.glitch-active {
+    animation: glitchShake 0.45s linear;
+  }
+
+  .card.glitch-active {
+    animation: glitchRGB 0.45s linear;
+  }
+
+  .avatar.glitch-active {
+    animation: glitchHue 0.45s linear;
+  }
+
+  .easter-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 0;
+    transform: translate(-50%, 120%);
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    background: rgba(12, 8, 16, 0.88);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: -4px 0 0 rgba(255, 0, 70, 0.6), 4px 0 0 rgba(0, 255, 255, 0.6), 0 10px 30px rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 16px 26px;
+    border-radius: 16px;
+    color: #f5f5f5;
+    font-weight: 700;
+    font-size: 1.05rem;
+    text-align: center;
+    max-width: 90%;
+    z-index: 50;
+    pointer-events: none;
+  }
+
+  .easter-toast.show {
+    transform: translate(-50%, -24px);
+  }
+
+  @media (max-width: 480px) {
+    .easter-toast {
+      font-size: 0.92rem;
+      padding: 14px 20px;
+    }
+  }
+
 </style>
 </head>
-<body>
+<body oncontextmenu="return false;">
 
-  <video class="bg-video" autoplay muted loop playsinline>
+  <video class="bg-video" autoplay muted loop playsinline oncontextmenu="return false;">
     <source src="fondo.mp4" type="video/mp4">
   </video>
   <div class="bg-overlay"></div>
 
   <div class="card">
-    <img class="avatar" src="avatar.png" alt="Avatar" onerror="this.style.opacity=0.2;">
+    <img class="avatar" src="avatar.png" alt="Avatar" draggable="false" onerror="this.style.opacity=0.2;">
     <div class="name">MalditoTucumano</div>
     <div class="location">Tucumán, Argentina</div>
     <div class="bio" id="bio"><span id="bio-text"></span><span class="cursor-blink">&nbsp;</span></div>
 
     <div class="socials">
-      <a href="https://www.instagram.com/brianuvu/" target="_blank" rel="noopener noreferrer" title="@brianuvu"><img src="logos/instagram.png" alt="Instagram"></a>
-      <a href="https://www.tiktok.com/@maldito_tucuman0" target="_blank" rel="noopener noreferrer" title="@maldito_tucuman0"><img src="logos/tik-tok.png" alt="TikTok"></a>
-      <a href="discord://discordapp.com/users/486374139876081665" target="_blank" rel="noopener noreferrer" title="brians_uvu"><img src="logos/discord.png" alt="Discord"></a>
-      <a href="https://kick.com/maldito-tucumano" target="_blank" rel="noopener noreferrer" title="Maldito_Tucumano"><img src="logos/kick.png" alt="Kick"></a>
+      <a href="https://www.instagram.com/brianuvu/" target="_blank" rel="noopener noreferrer" title="@brianuvu"><img src="logos/instagram.png" alt="Instagram" draggable="false"></a>
+      <a href="https://www.tiktok.com/@maldito_tucuman0" target="_blank" rel="noopener noreferrer" title="@maldito_tucuman0"><img src="logos/tik-tok.png" alt="TikTok" draggable="false"></a>
+      <a href="discord://discordapp.com/users/486374139876081665" target="_blank" rel="noopener noreferrer" title="brians_uvu"><img src="logos/discord.png" alt="Discord" draggable="false"></a>
+      <a href="https://kick.com/maldito-tucumano" target="_blank" rel="noopener noreferrer" title="Maldito_Tucumano"><img src="logos/kick.png" alt="Kick" draggable="false"></a>
+    </div>
+
+    <div class="views-counter" id="viewsCounter" title="Vistas totales">
+      <img src="ojo.png" alt="" draggable="false">
+      <span id="viewsCount">--</span>
     </div>
   </div>
 
   <div class="music-control">
     <button class="music-toggle" id="musicToggle" title="Activar/Desactivar música">🔇</button>
-    <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="0.5">
+    <div class="volume-wrapper" id="volumeWrapper">
+      <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="0.5">
+    </div>
   </div>
   <audio id="bgMusic" src="musica.mp3" loop></audio>
 
@@ -283,6 +438,8 @@
     <div class="watermark-brand">by MalditoTucumano</div>
     <div class="watermark-msg">si quieres algo como esto escribeme a cualquiera de mis redes y llegamos a un acuerdo</div>
   </div>
+
+  <div class="easter-toast" id="easterToast">Que tanto tocas ahí???????</div>
 
 <script>
   // Efecto de tipeo en la bio
@@ -323,6 +480,7 @@
 
   // Música de fondo: toggle de mute + slider de volumen en tiempo real
   const musicToggle = document.getElementById('musicToggle');
+  const volumeWrapper = document.getElementById('volumeWrapper');
   const volumeSlider = document.getElementById('volumeSlider');
   const bgMusic = document.getElementById('bgMusic');
   bgMusic.volume = parseFloat(volumeSlider.value);
@@ -331,14 +489,34 @@
     musicToggle.textContent = (bgMusic.paused || bgMusic.muted) ? '🔇' : '🔊';
   }
 
-  musicToggle.addEventListener('click', () => {
-    if (bgMusic.paused) {
-      bgMusic.muted = false;
-      bgMusic.play().catch(() => {});
-    } else {
+  // Ciclo de 3 pasos por click: 1) muestra la barra  2) mutea/desmutea  3) cierra la barra
+  let volumeStage = 0;
+
+  musicToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    volumeStage = (volumeStage + 1) % 3;
+
+    if (volumeStage === 1) {
+      if (bgMusic.paused) {
+        bgMusic.muted = false;
+        bgMusic.play().catch(() => {});
+      }
+      volumeWrapper.classList.add('open');
+    } else if (volumeStage === 2) {
       bgMusic.muted = !bgMusic.muted;
+    } else {
+      volumeWrapper.classList.remove('open');
     }
+
     updateMusicIcon();
+  });
+
+  // Cierra la barra de volumen al tocar fuera del control y reinicia el ciclo
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.music-control')) {
+      volumeStage = 0;
+      volumeWrapper.classList.remove('open');
+    }
   });
 
   volumeSlider.addEventListener('input', () => {
@@ -365,6 +543,85 @@
     });
   }
   tryAutoplay();
+
+  // Contador de vistas: solo suma una vez por visitante (localStorage),
+  // así un refresh no vuelve a incrementar el contador.
+  (function () {
+    const NAMESPACE = 'malditotucumano-bio';
+    const KEY = 'vistas';
+    const viewsCountEl = document.getElementById('viewsCount');
+    const yaVisito = localStorage.getItem('mt_ya_visito');
+    const endpoint = yaVisito
+      ? `https://abacus.jasoncameron.dev/get/${NAMESPACE}/${KEY}`
+      : `https://abacus.jasoncameron.dev/hit/${NAMESPACE}/${KEY}`;
+
+    fetch(endpoint)
+      .then(res => res.json())
+      .then(data => {
+        if (!yaVisito) localStorage.setItem('mt_ya_visito', '1');
+        viewsCountEl.textContent = data.value.toLocaleString('es-AR');
+      })
+      .catch(() => { viewsCountEl.textContent = '—'; });
+  })();
+
+  // Bloqueo de atajos comunes para descargar/inspeccionar imágenes
+  document.addEventListener('dragstart', e => {
+    if (e.target.tagName === 'IMG') e.preventDefault();
+  });
+
+  // Easter egg: 5 clicks seguidos (menos de 1.5s entre cada uno) en el avatar
+  (function () {
+    const avatarEl = document.querySelector('.avatar');
+    const cardEl = document.querySelector('.card');
+    const toastEl = document.getElementById('easterToast');
+    const bodyEl = document.body;
+
+    const CLICKS_NEEDED = 5;
+    const CLICK_WINDOW_MS = 1500;
+    const GLITCH_DURATION_MS = 480;
+    const TOAST_VISIBLE_MS = 2800;
+
+    let clickCount = 0;
+    let resetTimer = null;
+    let toastTimer = null;
+
+    function triggerEasterEgg() {
+      bodyEl.classList.add('glitch-active');
+      cardEl.classList.add('glitch-active');
+      avatarEl.classList.add('glitch-active');
+
+      setTimeout(() => {
+        bodyEl.classList.remove('glitch-active');
+        cardEl.classList.remove('glitch-active');
+        avatarEl.classList.remove('glitch-active');
+      }, GLITCH_DURATION_MS);
+
+      if (navigator.vibrate) {
+        navigator.vibrate([200, 100, 200]);
+      }
+
+      clearTimeout(toastTimer);
+      toastEl.classList.add('show');
+      toastTimer = setTimeout(() => {
+        toastEl.classList.remove('show');
+      }, TOAST_VISIBLE_MS);
+    }
+
+    avatarEl.addEventListener('click', () => {
+      clearTimeout(resetTimer);
+      clickCount++;
+
+      if (clickCount >= CLICKS_NEEDED) {
+        clickCount = 0;
+        triggerEasterEgg();
+        return;
+      }
+
+      resetTimer = setTimeout(() => {
+        clickCount = 0;
+      }, CLICK_WINDOW_MS);
+    });
+  })();
 </script>
 
 </body>
